@@ -5,22 +5,35 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import { dbConfig } from "./config/database.js";
 import experimentRoutes from "./routes/experiment.routes.js";
+import entryRoutes from "./routes/entry.routes.js";
+import metricTypeRoutes from "./routes/metricType.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(morgan("dev"));
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use("/api/experiments", experimentRoutes);
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  next();
+});
 
-// MongoDB connection
+app.use("/api/experiments", experimentRoutes);
+app.use("/api/entries", entryRoutes);
+app.use("/api/metric-types", metricTypeRoutes);
+
 mongoose
   .connect(dbConfig.url, dbConfig.options)
   .then(() => {
@@ -31,14 +44,12 @@ mongoose
     process.exit(1);
   });
 
-// Error handling middleware
 app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Praxis API" });
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
