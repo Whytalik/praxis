@@ -3,7 +3,7 @@ import { AppError, catchAsync } from "../utils/errors.js";
 
 export const metricTypeController = {
   getAll: catchAsync(async (req, res) => {
-    const metricTypes = await MetricType.find({ isActive: true });
+    const metricTypes = await MetricType.find();
     res.json(metricTypes);
   }),
 
@@ -26,7 +26,7 @@ export const metricTypeController = {
       return next(new AppError(400, "Validation type is required"));
     }
 
-    const metricType = new MetricType({
+    const metricType = await MetricType.create({
       name,
       description,
       validation,
@@ -34,14 +34,14 @@ export const metricTypeController = {
       unit,
     });
 
-    const savedMetricType = await metricType.save();
-    res.status(201).json(savedMetricType);
+    res.status(201).json(metricType);
   }),
 
   update: catchAsync(async (req, res, next) => {
+    const { description } = req.body;
     const metricType = await MetricType.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { description },
       { new: true, runValidators: true }
     );
 
@@ -53,16 +53,12 @@ export const metricTypeController = {
   }),
 
   delete: catchAsync(async (req, res, next) => {
-    const metricType = await MetricType.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false },
-      { new: true }
-    );
+    const metricType = await MetricType.findByIdAndDelete(req.params.id);
 
     if (!metricType) {
       return next(new AppError(404, "Metric type not found"));
     }
 
-    res.json({ message: "Metric type deactivated successfully" });
+    res.json({ message: "Metric type deleted successfully" });
   }),
 };

@@ -7,6 +7,7 @@ const metricTypeSchema = new mongoose.Schema(
       required: [true, "Metric type name is required"],
       unique: true,
       trim: true,
+      index: true,
     },
     description: {
       type: String,
@@ -43,7 +44,6 @@ const metricTypeSchema = new mongoose.Schema(
   }
 );
 
-metricTypeSchema.index({ name: 1 });
 metricTypeSchema.index({ isActive: 1 });
 
-export const MetricType = mongoose.model("MetricType", metricTypeSchema); 
+export const MetricType = mongoose.model("MetricType", metricTypeSchema);

@@ -7,7 +7,7 @@ import { dbConfig } from "./config/database.js";
 import experimentRoutes from "./routes/experiment.routes.js";
 import entryRoutes from "./routes/entry.routes.js";
 import metricTypeRoutes from "./routes/metricType.routes.js";
-import { errorHandler } from "./middleware/error.middleware.js";
+import { errorHandler } from "./middleware/error/errorHandler.js";
 
 dotenv.config();
 

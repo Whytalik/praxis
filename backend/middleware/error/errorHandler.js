@@ -1,9 +1,9 @@
-import { errorTypes } from "../utils/errors.js";
+import { errorTypes } from "../../utils/errors.js";
 import {
   handleCastErrorDB,
   handleValidationErrorDB,
   handleDuplicateFieldsDB,
-} from "../utils/errorHandlers.js";
+} from "../../utils/errorHandlers.js";
 
 export const errorHandler = (err, req, res, next) => {
   let error = { ...err };

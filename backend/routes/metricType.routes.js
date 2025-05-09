@@ -6,7 +6,7 @@ const router = Router();
 router.get("/", metricTypeController.getAll);
 router.get("/:id", metricTypeController.getById);
 router.post("/", metricTypeController.create);
-router.put("/:id", metricTypeController.update);
+router.patch("/:id", metricTypeController.update);
 router.delete("/:id", metricTypeController.delete);
 
-export default router; 
+export default router;
