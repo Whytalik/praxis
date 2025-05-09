@@ -1,4 +1,4 @@
-import { AppError } from "../utils/errors.js";
+import { AppError } from "../../utils/errors.js";
 
 export const validateStatus = (req, res, next) => {
   const { status } = req.body;
@@ -9,12 +9,12 @@ export const validateStatus = (req, res, next) => {
 };
 
 export const validateMetric = (req, res, next) => {
-  const { metric } = req.body;
-  if (!metric?.name) {
+  const { name, typeId } = req.body;
+  if (!name) {
     return next(new AppError(400, "Metric name is required"));
   }
-  if (metric.type && !["number", "text"].includes(metric.type)) {
-    return next(new AppError(400, "Invalid metric type"));
+  if (!typeId) {
+    return next(new AppError(400, "Metric type ID is required"));
   }
   next();
-}; 
+};

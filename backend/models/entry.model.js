@@ -29,7 +29,7 @@ const entrySchema = new mongoose.Schema(
             if (!experiment) return false;
 
             const metrics = experiment.metrics.reduce((acc, metric) => {
-              acc[metric.name] = metric.type;
+              acc[metric.name] = metric.validation?.type || "number";
               return acc;
             }, {});
 
