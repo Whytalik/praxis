@@ -1,5 +1,6 @@
 import { Experiment } from "../../models/experiment.model.js";
 import { MetricType } from "../../models/metricType.model.js";
+import { Entry } from "../../models/entry.model.js";
 import { AppError, catchAsync } from "../../utils/errors.js";
 
 export const experimentMetricController = {

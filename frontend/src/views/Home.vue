@@ -52,7 +52,7 @@ const {
   error,
   experimentsWithEntries,
   experimentsWithoutEntries,
-  fetchExperimentsWithEntries
+  fetchExperimentsWithEntries,
 } = useExperiments();
 
 onMounted(async () => {

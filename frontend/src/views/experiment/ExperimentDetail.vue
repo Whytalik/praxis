@@ -12,40 +12,16 @@
     </div>
 
     <div v-else>
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">
-          {{ experiment.name || "Untitled Experiment" }}
-        </h1>
-        <div class="flex gap-4">
-          <button
-            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-            @click="deleteExperiment"
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+      <ExperimentHeader :title="experiment.name" @delete="deleteExperiment" />
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Description</h2>
-            <p v-if="experiment.description" class="text-gray-600">
-              {{ experiment.description }}
-            </p>
-            <p v-else class="text-gray-500 italic">No description available</p>
-          </div>
-
-          <ExperimentMetrics :metrics="experiment.metrics" />
+          <ExperimentDescription :description="experiment.description" />
+          <DailyEntry v-if="experiment.id" :experiment="experiment" />
         </div>
 
         <div class="space-y-6">
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Status</h2>
-            <div class="flex items-center">
-              <StatusBadge :status="experiment.status" />
-            </div>
-          </div>
+          <ExperimentStatus :status="experiment.status" />
 
           <ExperimentTimeline
             :created-at="experiment.createdAt"
@@ -65,69 +41,21 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useExperimentsStore } from "@stores/experiments";
-import { storeToRefs } from "pinia";
-import StatusBadge from "@components/common/StatusBadge.vue";
-import ExperimentMetrics from "@components/experiment/ExperimentMetrics.vue";
+import { useRoute } from "vue-router";
+import { useExperimentDetail } from "@/composables/useExperimentDetail";
+import ExperimentHeader from "@components/experiment/ExperimentHeader.vue";
+import ExperimentDescription from "@components/experiment/ExperimentDescription.vue";
+import ExperimentStatus from "@components/experiment/ExperimentStatus.vue";
 import ExperimentTimeline from "@components/experiment/ExperimentTimeline.vue";
 import ExperimentActions from "@components/experiment/ExperimentActions.vue";
+import DailyEntry from "@components/experiment/DailyEntry.vue";
 
 const route = useRoute();
-const router = useRouter();
-const store = useExperimentsStore();
-const { experiments, error } = storeToRefs(store);
-
 const experimentId = route.params.id;
-const experiment = computed(() =>
-  experiments.value.find((exp) => exp.id === experimentId)
-);
+const { experiment, error, updateStatus, deleteExperiment, loadExperiment } =
+  useExperimentDetail(experimentId);
 
-const startExperiment = async () => {
-  try {
-    await store.updateExperimentStatus(experimentId, "in progress");
-  } catch (error) {
-    console.error("Failed to start experiment:", error);
-  }
-};
-
-const completeExperiment = async () => {
-  try {
-    await store.updateExperimentStatus(experimentId, "completed");
-  } catch (error) {
-    console.error("Failed to complete experiment:", error);
-  }
-};
-
-const updateStatus = async (newStatus) => {
-  try {
-    await store.updateExperimentStatus(experimentId, newStatus);
-  } catch (error) {
-    console.error("Failed to update status:", error);
-  }
-};
-
-const deleteExperiment = async () => {
-  if (!confirm("Are you sure you want to delete this experiment?")) {
-    return;
-  }
-
-  try {
-    await store.deleteExperiment(experimentId);
-    router.push("/experiments");
-  } catch (error) {
-    console.error("Failed to delete experiment:", error);
-  }
-};
-
-onMounted(async () => {
-  try {
-    await store.fetchExperiments();
-    if (!experiment.value) {
-      await store.fetchExperiment(experimentId);
-    }
-  } catch (error) {
-    console.error("Failed to fetch experiment:", error);
-  }
+onMounted(() => {
+  loadExperiment();
 });
 </script>

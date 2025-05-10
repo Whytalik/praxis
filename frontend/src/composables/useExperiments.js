@@ -25,7 +25,7 @@ export function useExperiments() {
       for (const experiment of inProgressExperiments.value) {
         try {
           const response = await axios.get(
-            `/experiments/${experiment.id}/entries`
+            `/api/experiments/${experiment.id}/entries`
           );
           experiment.hasEntries = response.data.length > 0;
         } catch (entryError) {

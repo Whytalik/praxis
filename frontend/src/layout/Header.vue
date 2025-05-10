@@ -2,7 +2,6 @@
   <header class="bg-white border-b border-gray-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
-
         <div class="flex-shrink-0">
           <router-link to="/" class="text-xl font-semibold text-gray-900">
             Praxis
@@ -31,9 +30,7 @@ import { computed } from "vue";
 
 const route = useRoute();
 
-const navigationItems = [
-  { name: "Experiments", href: "/experiments" },
-];
+const navigationItems = [{ name: "Experiments", href: "/experiments" }];
 
 const isCurrentRoute = (href) => {
   return route.path === href;

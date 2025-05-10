@@ -46,4 +46,4 @@ const { experiments, error } = storeToRefs(store);
 onMounted(() => {
   store.fetchExperiments();
 });
-</script> 
+</script>

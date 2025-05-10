@@ -21,23 +21,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ["in progress", "completed", "pending"].includes(value),
+    validator: (value) =>
+      ["in progress", "completed", "pending"].includes(value),
   },
 });
 
 defineEmits(["update-status"]);
 
 const isStartDisabled = computed(() => {
-  return props.status === 'in progress' || props.status === 'completed';
+  return props.status === "in progress" || props.status === "completed";
 });
 
 const isCompleteDisabled = computed(() => {
-  return props.status !== 'in progress';
+  return props.status !== "in progress";
 });
 </script>

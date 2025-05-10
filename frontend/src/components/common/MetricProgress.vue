@@ -20,7 +20,10 @@ defineProps({
     type: Object,
     required: true,
     validator: (value) => {
-      return value.name && (value.value === undefined || typeof value.value === "number");
+      return (
+        value.name &&
+        (value.value === undefined || typeof value.value === "number")
+      );
     },
   },
 });
