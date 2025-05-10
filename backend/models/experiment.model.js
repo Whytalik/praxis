@@ -10,6 +10,11 @@ const experimentSchema = new mongoose.Schema(
       minLength: [3, "Title must be at least 3 characters long"],
       maxLength: [100, "Title cannot be longer than 100 characters"],
     },
+    description: {
+      type: String,
+      trim: true,
+      maxLength: [1000, "Description cannot be longer than 1000 characters"],
+    },
     metrics: {
       type: [
         {
@@ -46,8 +51,8 @@ const experimentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "paused", "completed"],
-      default: "active",
+      enum: ["pending", "in progress", "completed"],
+      default: "pending",
     },
     createdAt: {
       type: Date,
@@ -103,7 +108,7 @@ experimentSchema.methods.addMetric = async function (metric) {
 };
 
 experimentSchema.methods.updateStatus = async function (newStatus) {
-  if (!["active", "paused", "completed"].includes(newStatus)) {
+  if (!["pending", "in progress", "completed"].includes(newStatus)) {
     throw new Error("Invalid status");
   }
 

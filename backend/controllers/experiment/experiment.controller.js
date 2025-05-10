@@ -5,7 +5,7 @@ import { AppError, catchAsync } from "../../utils/errors.js";
 
 export const experimentController = {
   create: catchAsync(async (req, res, next) => {
-    const { title, metrics } = req.body;
+    const { title, metrics, description } = req.body;
 
     if (!title) {
       return next(new AppError(400, "Title is required"));
@@ -34,8 +34,9 @@ export const experimentController = {
 
     const experiment = await Experiment.create({
       title,
+      description,
       metrics,
-      status: "active",
+      status: "pending",
     });
 
     res.status(201).json(experiment);
@@ -55,9 +56,9 @@ export const experimentController = {
   }),
 
   update: catchAsync(async (req, res, next) => {
-    const { title, metrics } = req.body;
+    const { title, metrics, description } = req.body;
 
-    if (!title && !metrics) {
+    if (!title && !metrics && !description) {
       return next(new AppError(400, "Nothing to update"));
     }
 
@@ -68,6 +69,10 @@ export const experimentController = {
 
     if (title) {
       experiment.title = title;
+    }
+
+    if (description !== undefined) {
+      experiment.description = description;
     }
 
     if (metrics) {

@@ -7,7 +7,7 @@
       "@layout/*": ["src/layout/*"],
       "@assets/*": ["src/assets/*"],
       "@views/*": ["src/views/*"],
-      "@store/*": ["src/store/*"],
+      "@stores/*": ["src/stores/*"],
       "@utils/*": ["src/utils/*"]
     }
   },
