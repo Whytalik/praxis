@@ -16,12 +16,7 @@
         <h1 class="text-2xl font-bold">
           {{ experiment.name || "Untitled Experiment" }}
         </h1>
-        <div class="flex gap-2">
-          <button
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-          >
-            Edit
-          </button>
+        <div class="flex gap-4">
           <button
             class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
             @click="deleteExperiment"
@@ -87,6 +82,22 @@ const experimentId = route.params.id;
 const experiment = computed(() =>
   experiments.value.find((exp) => exp.id === experimentId)
 );
+
+const startExperiment = async () => {
+  try {
+    await store.updateExperimentStatus(experimentId, "in progress");
+  } catch (error) {
+    console.error("Failed to start experiment:", error);
+  }
+};
+
+const completeExperiment = async () => {
+  try {
+    await store.updateExperimentStatus(experimentId, "completed");
+  } catch (error) {
+    console.error("Failed to complete experiment:", error);
+  }
+};
 
 const updateStatus = async (newStatus) => {
   try {

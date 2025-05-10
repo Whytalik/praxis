@@ -2,7 +2,7 @@ import { AppError } from "../../utils/errors.js";
 
 export const validateStatus = (req, res, next) => {
   const { status } = req.body;
-  if (!["active", "paused", "completed"].includes(status)) {
+  if (!["pending", "in progress", "completed"].includes(status)) {
     return next(new AppError(400, "Invalid status"));
   }
   next();

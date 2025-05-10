@@ -9,12 +9,11 @@
  */
 
 /**
- * @typedef {('active'|'completed'|'failed'|'pending')} ExperimentStatus
+ * @typedef {('in progress'|'completed'|'pending')} ExperimentStatus
  */
 
 export const EXPERIMENT_STATUS = {
-  ACTIVE: "active",
+  IN_PROGRESS: "in progress",
   COMPLETED: "completed",
-  FAILED: "failed",
   PENDING: "pending",
 };

@@ -36,7 +36,7 @@ export const experimentController = {
       title,
       description,
       metrics,
-      status: "active",
+      status: "pending",
     });
 
     res.status(201).json(experiment);

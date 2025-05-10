@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@views/Home.vue";
-import ExperimentsList from "@views/experiment/ExperimentsList.vue";
+import Experiments from "@views/experiment/Experiments.vue";
 import ExperimentDetail from "@views/experiment/ExperimentDetail.vue";
 import ExperimentCreate from "@views/experiment/ExperimentCreate.vue";
 
@@ -13,7 +13,7 @@ const routes = [
   {
     path: "/experiments",
     name: "Experiments",
-    component: ExperimentsList,
+    component: Experiments,
   },
   {
     path: "/experiments/new",

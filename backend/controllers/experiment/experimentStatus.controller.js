@@ -4,21 +4,27 @@ import { AppError, catchAsync } from "../../utils/errors.js";
 export const experimentStatusController = {
   updateStatus: catchAsync(async (req, res, next) => {
     const { status } = req.body;
-
-    if (!status || !["active", "paused", "completed"].includes(status)) {
-      return next(
-        new AppError(400, "Status must be one of: active, paused, completed")
-      );
-    }
-
     const experiment = await Experiment.findById(req.params.id);
+
     if (!experiment) {
       return next(new AppError(404, "Experiment not found"));
     }
 
-    experiment.status = status;
-    const updatedExperiment = await experiment.save();
+    if (!["pending", "in progress", "completed"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
 
-    res.json(updatedExperiment);
+    if (status === "in progress" && experiment.status === "completed") {
+      return res.status(400).json({ message: "Cannot restart completed experiment" });
+    }
+
+    if (status === "completed" && experiment.status !== "in progress") {
+      return res.status(400).json({ message: "Can only complete in-progress experiments" });
+    }
+
+    experiment.status = status;
+    await experiment.save();
+
+    res.json(experiment);
   }),
 };

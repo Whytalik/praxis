@@ -23,13 +23,13 @@
       No experiments available
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <ExperimentsList v-else title="All Experiments">
       <ExperimentCard
         v-for="experiment in experiments"
         :key="experiment.id"
         :experiment="experiment"
       />
-    </div>
+    </ExperimentsList>
   </div>
 </template>
 
@@ -38,6 +38,7 @@ import { onMounted } from "vue";
 import { useExperimentsStore } from "@stores/experiments";
 import { storeToRefs } from "pinia";
 import ExperimentCard from "@components/experiment/ExperimentCard.vue";
+import ExperimentsList from "@components/experiment/ExperimentsList.vue";
 
 const store = useExperimentsStore();
 const { experiments, error } = storeToRefs(store);
@@ -45,4 +46,4 @@ const { experiments, error } = storeToRefs(store);
 onMounted(() => {
   store.fetchExperiments();
 });
-</script>
+</script> 

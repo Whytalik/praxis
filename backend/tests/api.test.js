@@ -78,13 +78,13 @@ describe("API Tests", () => {
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status: "paused" }),
+          body: JSON.stringify({ status: "in_progress" }),
         }
       );
       const updatedExperiment = await response.json();
 
       expect(response.status).toBe(200);
-      expect(updatedExperiment.status).toBe("paused");
+      expect(updatedExperiment.status).toBe("in_progress");
     });
   });
 

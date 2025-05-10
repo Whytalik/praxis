@@ -51,8 +51,8 @@ const experimentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["active", "completed"],
-      default: "active",
+      enum: ["pending", "in progress", "completed"],
+      default: "pending",
     },
     createdAt: {
       type: Date,
@@ -108,7 +108,7 @@ experimentSchema.methods.addMetric = async function (metric) {
 };
 
 experimentSchema.methods.updateStatus = async function (newStatus) {
-  if (!["active", "completed"].includes(newStatus)) {
+  if (!["pending", "in progress", "completed"].includes(newStatus)) {
     throw new Error("Invalid status");
   }
 

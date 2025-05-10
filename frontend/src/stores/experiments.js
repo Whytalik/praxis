@@ -72,30 +72,25 @@ export const useExperimentsStore = defineStore("experiments", {
       }
     },
 
-    async updateExperimentStatus(id, newStatus) {
+    async updateExperimentStatus(id, status) {
+      this.error = null;
       try {
         const response = await axios.patch(`/api/experiments/${id}/status`, {
-          status: newStatus,
+          status,
         });
-
-        const updatedExperiment = response.data;
+        const updatedExperiment = formatExperiment(response.data);
         const index = this.experiments.findIndex((e) => e.id === id);
-
-        if (index >= 0) {
-          this.experiments[index] = {
-            ...this.experiments[index],
-            status: updatedExperiment.status,
-            updatedAt: updatedExperiment.updatedAt,
-          };
+        if (index !== -1) {
+          this.experiments[index] = updatedExperiment;
         }
-
         return updatedExperiment;
       } catch (error) {
-        throw new Error(
+        this.error =
           error.response?.data?.message ||
-            error.message ||
-            "Failed to update experiment status"
-        );
+          error.message ||
+          "Failed to update experiment status";
+        console.error("Error updating experiment status:", error);
+        throw error;
       }
     },
 
