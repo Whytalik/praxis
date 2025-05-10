@@ -8,6 +8,8 @@ import experimentRoutes from "./routes/experiment.routes.js";
 import entryRoutes from "./routes/entry.routes.js";
 import metricTypeRoutes from "./routes/metricType.routes.js";
 import { errorHandler } from "./middleware/error/errorHandler.js";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger.js";
 
 dotenv.config();
 
@@ -35,6 +37,9 @@ app.use((req, res, next) => {
 app.use("/api/experiments", experimentRoutes);
 app.use("/api/entries", entryRoutes);
 app.use("/api/metric-types", metricTypeRoutes);
+
+// Swagger UI
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 mongoose
   .connect(dbConfig.url, dbConfig.options)
