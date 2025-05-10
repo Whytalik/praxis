@@ -6,12 +6,12 @@
           © {{ new Date().getFullYear() }} Praxis. All rights reserved.
         </p>
         <div class="flex space-x-6">
-          <a href="#" class="text-gray-400 hover:text-gray-500">
+          <router-link
+            to="/privacy-policy"
+            class="text-gray-400 hover:text-gray-500"
+          >
             Privacy Policy
-          </a>
-          <a href="#" class="text-gray-400 hover:text-gray-500">
-            Terms of Service
-          </a>
+          </router-link>
         </div>
       </div>
     </div>
