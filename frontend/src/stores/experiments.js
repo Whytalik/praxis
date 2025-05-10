@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "@/utils/axios";
-import { EXPERIMENT_STATUS } from "@/types/experiment";
+import { formatExperiment, formatExperiments } from "@/utils/experiment";
 
 export const useExperimentsStore = defineStore("experiments", {
   state: () => ({
@@ -21,22 +21,7 @@ export const useExperimentsStore = defineStore("experiments", {
         const response = await axios.get("/api/experiments");
         console.log("API Response:", response.data);
 
-        if (!Array.isArray(response.data)) {
-          console.error("Expected array but got:", typeof response.data);
-          throw new Error("Invalid data format from API");
-        }
-
-        this.experiments = response.data.map((exp) => ({
-          id: exp._id,
-          name: exp.title || `Experiment ${exp._id || "No ID"}`,
-          createdAt: exp.createdAt || new Date().toISOString(),
-          description: exp.description || "",
-          status: exp.status || EXPERIMENT_STATUS.PENDING,
-          duration: exp.duration || 0,
-          metrics: exp.metrics || [],
-          updatedAt: exp.updatedAt || exp.createdAt,
-        }));
-
+        this.experiments = formatExperiments(response.data);
         console.log("Processed experiments:", this.experiments);
       } catch (error) {
         this.error =
@@ -51,18 +36,7 @@ export const useExperimentsStore = defineStore("experiments", {
       this.error = null;
       try {
         const response = await axios.get(`/api/experiments/${id}`);
-        const exp = response.data;
-
-        const formattedExperiment = {
-          id: exp._id,
-          name: exp.title || `Experiment ${exp._id || "No ID"}`,
-          createdAt: exp.createdAt || new Date().toISOString(),
-          description: exp.description || "",
-          status: exp.status || EXPERIMENT_STATUS.PENDING,
-          duration: exp.duration || 0,
-          metrics: exp.metrics || [],
-          updatedAt: exp.updatedAt || exp.createdAt,
-        };
+        const formattedExperiment = formatExperiment(response.data);
 
         const index = this.experiments.findIndex(
           (e) => e.id === formattedExperiment.id
@@ -85,19 +59,7 @@ export const useExperimentsStore = defineStore("experiments", {
       this.error = null;
       try {
         const response = await axios.post("/api/experiments", experimentData);
-        const exp = response.data;
-
-        const formattedExperiment = {
-          id: exp._id,
-          name: exp.title || `Experiment ${exp._id || "No ID"}`,
-          createdAt: exp.createdAt || new Date().toISOString(),
-          description: exp.description || "",
-          status: exp.status || EXPERIMENT_STATUS.PENDING,
-          duration: exp.duration || 0,
-          metrics: exp.metrics || [],
-          updatedAt: exp.updatedAt || exp.createdAt,
-        };
-
+        const formattedExperiment = formatExperiment(response.data);
         this.experiments.push(formattedExperiment);
         return formattedExperiment;
       } catch (error) {
@@ -134,6 +96,21 @@ export const useExperimentsStore = defineStore("experiments", {
             error.message ||
             "Failed to update experiment status"
         );
+      }
+    },
+
+    async deleteExperiment(id) {
+      this.error = null;
+      try {
+        await axios.delete(`/api/experiments/${id}`);
+        this.experiments = this.experiments.filter((exp) => exp.id !== id);
+      } catch (error) {
+        this.error =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to delete experiment";
+        console.error("Error deleting experiment:", error);
+        throw error;
       }
     },
   },
