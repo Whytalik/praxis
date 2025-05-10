@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import ExperimentsList from "@/components/ExperimentsList.vue";
 
 const routes = [
   {
@@ -9,7 +10,7 @@ const routes = [
   {
     path: "/experiments",
     name: "Experiments",
-    component: () => import("@/views/Experiments.vue"),
+    component: ExperimentsList,
   },
 ];
 
