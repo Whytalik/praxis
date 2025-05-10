@@ -52,7 +52,7 @@ export const useExperimentsStore = defineStore("experiments", {
       try {
         const response = await axios.get(`/api/experiments/${id}`);
         const exp = response.data;
-        
+
         const formattedExperiment = {
           id: exp._id,
           name: exp.title || `Experiment ${exp._id || "No ID"}`,
@@ -63,7 +63,7 @@ export const useExperimentsStore = defineStore("experiments", {
           metrics: exp.metrics || [],
           updatedAt: exp.updatedAt || exp.createdAt,
         };
-        
+
         const index = this.experiments.findIndex(
           (e) => e.id === formattedExperiment.id
         );
@@ -81,6 +81,35 @@ export const useExperimentsStore = defineStore("experiments", {
       }
     },
 
+    async createExperiment(experimentData) {
+      this.error = null;
+      try {
+        const response = await axios.post("/api/experiments", experimentData);
+        const exp = response.data;
+
+        const formattedExperiment = {
+          id: exp._id,
+          name: exp.title || `Experiment ${exp._id || "No ID"}`,
+          createdAt: exp.createdAt || new Date().toISOString(),
+          description: exp.description || "",
+          status: exp.status || EXPERIMENT_STATUS.PENDING,
+          duration: exp.duration || 0,
+          metrics: exp.metrics || [],
+          updatedAt: exp.updatedAt || exp.createdAt,
+        };
+
+        this.experiments.push(formattedExperiment);
+        return formattedExperiment;
+      } catch (error) {
+        this.error =
+          error.response?.data?.message ||
+          error.message ||
+          "Failed to create experiment";
+        console.error("Error creating experiment:", error);
+        throw error;
+      }
+    },
+
     async updateExperimentStatus(id, newStatus) {
       try {
         const response = await axios.patch(`/api/experiments/${id}/status`, {
@@ -89,7 +118,7 @@ export const useExperimentsStore = defineStore("experiments", {
 
         const updatedExperiment = response.data;
         const index = this.experiments.findIndex((e) => e.id === id);
-        
+
         if (index >= 0) {
           this.experiments[index] = {
             ...this.experiments[index],
@@ -102,8 +131,8 @@ export const useExperimentsStore = defineStore("experiments", {
       } catch (error) {
         throw new Error(
           error.response?.data?.message ||
-          error.message ||
-          "Failed to update experiment status"
+            error.message ||
+            "Failed to update experiment status"
         );
       }
     },

@@ -38,7 +38,7 @@ import {
   formatDate,
   formatDuration,
   capitalizeFirstLetter,
-} from "@/utils/formatters";
+} from "@utils/formatters";
 import { STATUS_STYLES } from "@/constants/experimentStyles";
 
 const props = defineProps({

@@ -24,6 +24,7 @@
           </button>
           <button
             class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+            @click="deleteExperiment"
           >
             Delete
           </button>
@@ -40,94 +41,27 @@
             <p v-else class="text-gray-500 italic">No description available</p>
           </div>
 
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Metrics</h2>
-            <div v-if="experiment.metrics && experiment.metrics.length">
-              <div
-                v-for="(metric, index) in experiment.metrics"
-                :key="index"
-                class="mb-4 last:mb-0"
-              >
-                <div class="flex justify-between mb-1">
-                  <span class="font-medium">{{ metric.name }}</span>
-                  <span>{{ metric.value }}</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    class="bg-blue-600 h-2.5 rounded-full"
-                    :style="{ width: `${metric.value}%` }"
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <p v-else class="text-gray-500 italic">No metrics available</p>
-          </div>
+          <ExperimentMetrics :metrics="experiment.metrics" />
         </div>
 
         <div class="space-y-6">
           <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-lg font-semibold mb-4">Status</h2>
             <div class="flex items-center">
-              <span
-                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                :class="[statusStyles.background, statusStyles.text]"
-              >
-                <span class="mr-1.5">{{ statusStyles.icon }}</span>
-                {{ statusText }}
-              </span>
+              <StatusBadge :status="experiment.status" />
             </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Timeline</h2>
-            <div class="space-y-3">
-              <div class="flex justify-between">
-                <span class="text-sm font-medium">Created</span>
-                <span class="text-sm text-gray-500">{{
-                  formatDate(experiment.createdAt)
-                }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm font-medium">Last Updated</span>
-                <span class="text-sm text-gray-500">{{
-                  formatDate(experiment.updatedAt)
-                }}</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-sm font-medium">Duration</span>
-                <span class="text-sm text-gray-500">{{
-                  formatDuration(experiment.duration)
-                }}</span>
-              </div>
-            </div>
-          </div>
+          <ExperimentTimeline
+            :created-at="experiment.createdAt"
+            :updated-at="experiment.updatedAt"
+            :duration="experiment.duration"
+          />
 
-          <div class="bg-white rounded-lg shadow-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Actions</h2>
-            <div class="space-y-3">
-              <button
-                class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
-                :disabled="experiment.status === 'active'"
-                @click="updateStatus('active')"
-              >
-                Start Experiment
-              </button>
-              <button
-                class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors"
-                :disabled="experiment.status === 'paused'"
-                @click="updateStatus('paused')"
-              >
-                Pause Experiment
-              </button>
-              <button
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
-                :disabled="experiment.status === 'completed'"
-                @click="updateStatus('completed')"
-              >
-                Complete Experiment
-              </button>
-            </div>
-          </div>
+          <ExperimentActions
+            :status="experiment.status"
+            @update-status="updateStatus"
+          />
         </div>
       </div>
     </div>
@@ -136,17 +70,16 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useExperimentsStore } from "@stores/experiments";
 import { storeToRefs } from "pinia";
-import {
-  formatDate,
-  formatDuration,
-  capitalizeFirstLetter,
-} from "@utils/formatters";
-import { STATUS_STYLES } from "@/constants/experimentStyles";
+import StatusBadge from "@components/common/StatusBadge.vue";
+import ExperimentMetrics from "@components/experiment/ExperimentMetrics.vue";
+import ExperimentTimeline from "@components/experiment/ExperimentTimeline.vue";
+import ExperimentActions from "@components/experiment/ExperimentActions.vue";
 
 const route = useRoute();
+const router = useRouter();
 const store = useExperimentsStore();
 const { experiments, error } = storeToRefs(store);
 
@@ -155,20 +88,24 @@ const experiment = computed(() =>
   experiments.value.find((exp) => exp.id === experimentId)
 );
 
-const statusText = computed(() => {
-  return capitalizeFirstLetter(experiment.value?.status || "unknown");
-});
-
-const statusStyles = computed(() => {
-  const status = experiment.value?.status?.toLowerCase();
-  return STATUS_STYLES[status] || STATUS_STYLES.default;
-});
-
 const updateStatus = async (newStatus) => {
   try {
     await store.updateExperimentStatus(experimentId, newStatus);
   } catch (error) {
     console.error("Failed to update status:", error);
+  }
+};
+
+const deleteExperiment = async () => {
+  if (!confirm("Are you sure you want to delete this experiment?")) {
+    return;
+  }
+
+  try {
+    await store.deleteExperiment(experimentId);
+    router.push("/experiments");
+  } catch (error) {
+    console.error("Failed to delete experiment:", error);
   }
 };
 

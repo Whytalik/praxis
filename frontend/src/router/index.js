@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@views/Home.vue";
-import ExperimentsList from "@/views/experiment/ExperimentsList.vue";
+import ExperimentsList from "@views/experiment/ExperimentsList.vue";
 import ExperimentDetail from "@views/experiment/ExperimentDetail.vue";
+import ExperimentCreate from "@views/experiment/ExperimentCreate.vue";
 
 const routes = [
   {
@@ -13,6 +14,11 @@ const routes = [
     path: "/experiments",
     name: "Experiments",
     component: ExperimentsList,
+  },
+  {
+    path: "/experiments/new",
+    name: "ExperimentCreate",
+    component: ExperimentCreate,
   },
   {
     path: "/experiments/:id",
