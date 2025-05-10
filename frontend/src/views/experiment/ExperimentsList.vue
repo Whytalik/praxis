@@ -12,14 +12,8 @@
       </router-link>
     </div>
 
-    <div v-if="loading" class="text-center py-8">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"
-      ></div>
-    </div>
-
     <div
-      v-else-if="error"
+      v-if="error"
       class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
     >
       {{ error }}
@@ -41,28 +35,12 @@
 
 <script setup>
 import { onMounted } from "vue";
-import { useRouter } from "vue-router";
-import { useExperimentsStore } from "@/stores/experiments";
+import { useExperimentsStore } from "@stores/experiments";
 import { storeToRefs } from "pinia";
-import ExperimentCard from "./ExperimentCard.vue";
+import ExperimentCard from "@components/experiment/ExperimentCard.vue";
 
-const router = useRouter();
 const store = useExperimentsStore();
-const { experiments, loading, error } = storeToRefs(store);
-
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("uk-UA", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
-
-const navigateToExperiment = (id) => {
-  router.push(`/experiments/${id}`);
-};
+const { experiments, error } = storeToRefs(store);
 
 onMounted(() => {
   store.fetchExperiments();

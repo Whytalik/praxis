@@ -4,6 +4,11 @@ export const STATUS_STYLES = {
     text: "text-green-800",
     icon: "●",
   },
+  paused: {
+    background: "bg-yellow-100",
+    text: "text-yellow-800",
+    icon: "⏸",
+  },
   completed: {
     background: "bg-blue-100",
     text: "text-blue-800",
