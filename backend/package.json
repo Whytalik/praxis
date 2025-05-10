@@ -8,7 +8,7 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "seed": "node utils/seedData.js"
+    "docs": "apidoc -i ./docs -o ./docs/output"
   },
   "keywords": [],
   "author": "",
