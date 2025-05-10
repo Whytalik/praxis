@@ -7,10 +7,12 @@
       </section>
     </main>
     <Footer />
+    <CookieConsent />
   </div>
 </template>
 
 <script setup>
 import Header from "@layout/Header.vue";
 import Footer from "@layout/Footer.vue";
+import CookieConsent from "@/components/common/CookieConsent.vue";
 </script>
