@@ -1,6 +1,5 @@
 # 🧪 Praxis
 
-
 ## 📝 Overview
 
 Praxis is an innovative platform that revolutionizes the way we conduct and track experiments. Built with modern web technologies, it provides a seamless experience for researchers, data scientists, and curious minds who want to make data-driven decisions.
@@ -100,10 +99,6 @@ API documentation is available at `/api-docs` when running the backend server. I
 ```bash
 # Run backend tests
 cd backend
-npm test
-
-# Run frontend tests
-cd frontend
 npm test
 ```
 
