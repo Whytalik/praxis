@@ -1,0 +1,20 @@
+{
+  "name": "Praxis API Documentation",
+  "version": "1.0.0",
+  "description": "API documentation for Praxis project - Experiment Management System",
+  "title": "Praxis API",
+  "url": "http://localhost:3000",
+  "sampleUrl": "http://localhost:3000",
+  "header": {
+    "title": "Introduction",
+    "content": "This API provides endpoints for managing scientific experiments, their metrics, and experimental data. It allows you to create experiments, define metric types, record measurements, and analyze results."
+  },
+  "footer": {
+    "title": "Additional Information",
+    "content": "For more information about the Praxis project, please contact the development team."
+  },
+  "template": {
+    "withGenerator": false,
+    "withCompare": true
+  }
+}
